@@ -43,7 +43,7 @@ object HigherOrder {
       else {
         val sorted: Boolean = f(a(pos1), a(pos2))
         if (sorted) go(a, pos2, pos2 + 1)
-        else return false
+        else false
       }
     }
 
