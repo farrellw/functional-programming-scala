@@ -46,5 +46,10 @@ object DS {
       if(n <= 0) ds
       else drop(n - 1, tail(ds))
     }
+
+    def dropWhile[A](f: A => Boolean, ds: DS.List[A]): DS.List[A] = ds match {
+      case DS.Cons(h, t) if f(h) => dropWhile(f, t)
+      case _ => ds
+    }
   }
 }
