@@ -47,8 +47,8 @@ object DS {
       else drop(n - 1, tail(ds))
     }
 
-    def dropWhile[A](f: A => Boolean, ds: DS.List[A]): DS.List[A] = ds match {
-      case DS.Cons(h, t) if f(h) => dropWhile(f, t)
+    def dropWhile[A](ds: DS.List[A])(f: A => Boolean): DS.List[A] = ds match {
+      case DS.Cons(h, t) if f(h) => dropWhile(t)(f)
       case _ => ds
     }
 

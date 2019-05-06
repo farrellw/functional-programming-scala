@@ -64,19 +64,19 @@ class DSSpec extends FunSpec {
 
   describe("Drop While, 3.5") {
     it("Removes elements from the List prefix as long as they match a predicate") {
-      val actual = DS.List.dropWhile((a: Int) => a <= 2, DS.List(1, 2, 3, 4))
+      val actual = DS.List.dropWhile(DS.List(1, 2, 3, 4))(a => a <= 2)
       val expected = DS.List(3, 4)
       assert(actual == expected)
     }
 
     it("Returns nil when all elements in the list match a predicate") {
-      val actual = DS.List.dropWhile((a: Int) => a <= 5, DS.List(1, 2, 3, 4))
+      val actual = DS.List.dropWhile(DS.List(1, 2, 3, 4))(a => a <= 5)
       val expected = DS.Nil
       assert(actual == expected)
     }
 
     it("Returns nil when input list is nil") {
-      val actual = DS.List.dropWhile((a: Int) => a <= 2, DS.Nil)
+      val actual = DS.List.dropWhile(DS.Nil)(a => false)
       val expected = DS.Nil
       assert(actual == expected)
     }
@@ -86,16 +86,19 @@ class DSSpec extends FunSpec {
     it("Returns a list consisting of all but the last element of a List") {
       val actual = DS.List.init(DS.List(1, 2, 3, 4))
       val expected = DS.List(1, 2, 3)
+
       assert(actual == expected)
     }
     it("Returns nil when the list input only has one element") {
       val actual = DS.List.init(DS.List(1))
       val expected = DS.Nil
+
       assert(actual == expected)
     }
     it("Returns nil when the input list is nil") {
       val actual = DS.List.init(DS.Nil)
       val expected = DS.Nil
+
       assert(actual == expected)
     }
   }
