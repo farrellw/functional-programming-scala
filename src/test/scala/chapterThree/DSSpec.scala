@@ -32,7 +32,7 @@ class DSSpec extends FunSpec {
     }
   }
 
-  describe("SetHead 3.3") {
+  describe("SetHead, 3.3") {
     it("Replaces the first element of list with a different value") {
       val newValue = 5
       val actual = DS.List.setHead(newValue, DS.List(1, 2, 3, 4))
@@ -48,7 +48,7 @@ class DSSpec extends FunSpec {
     }
   }
 
-  describe("Drop 3.4") {
+  describe("Drop, 3.4") {
     it("Removes the first n elements from a list") {
       val actual = DS.List.drop(2, DS.List(1, 2, 3, 4))
       val expected = DS.List(3, 4)
@@ -62,21 +62,39 @@ class DSSpec extends FunSpec {
     }
   }
 
-  describe("Drop While 3.5"){
-    it("Removes elements from the List prefix as long as they match a predicate"){
-      val actual = DS.List.dropWhile((a: Int) => a <= 2, DS.List(1,2,3,4))
-      val expected = DS.List(3,4)
+  describe("Drop While, 3.5") {
+    it("Removes elements from the List prefix as long as they match a predicate") {
+      val actual = DS.List.dropWhile((a: Int) => a <= 2, DS.List(1, 2, 3, 4))
+      val expected = DS.List(3, 4)
       assert(actual == expected)
     }
 
-    it("Returns nil when all elements in the list match a predicate"){
-      val actual = DS.List.dropWhile((a: Int) => a <= 5, DS.List(1,2,3,4))
+    it("Returns nil when all elements in the list match a predicate") {
+      val actual = DS.List.dropWhile((a: Int) => a <= 5, DS.List(1, 2, 3, 4))
       val expected = DS.Nil
       assert(actual == expected)
     }
 
-    it("Returns nil when input list is nil"){
+    it("Returns nil when input list is nil") {
       val actual = DS.List.dropWhile((a: Int) => a <= 2, DS.Nil)
+      val expected = DS.Nil
+      assert(actual == expected)
+    }
+  }
+
+  describe("Init, 3.6") {
+    it("Returns a list consisting of all but the last element of a List") {
+      val actual = DS.List.init(DS.List(1, 2, 3, 4))
+      val expected = DS.List(1, 2, 3)
+      assert(actual == expected)
+    }
+    it("Returns nil when the list input only has one element") {
+      val actual = DS.List.init(DS.List(1))
+      val expected = DS.Nil
+      assert(actual == expected)
+    }
+    it("Returns nil when the input list is nil") {
+      val actual = DS.List.init(DS.Nil)
       val expected = DS.Nil
       assert(actual == expected)
     }

@@ -51,5 +51,26 @@ object DS {
       case DS.Cons(h, t) if f(h) => dropWhile(f, t)
       case _ => ds
     }
+
+    def append[A](a1: DS.List[A], a2: DS.List[A]): DS.List[A] = a1 match {
+      case DS.Nil => a2
+      case DS.Cons(h, t) => DS.Cons(h, append(t, a2))
+    }
+
+    // Have to look two ahead in each loop.
+    // When hit nil for the next of next, return head without tail
+    def init[A](ds: DS.List[A]): DS.List[A] = ds match {
+      case DS.Cons(h, t) => {
+        t match {
+          case DS.Cons(_, tt) =>
+            tt match {
+              case DS.Nil => DS.Cons(h, DS.Nil)
+              case _ => DS.Cons(h, init(t))
+            }
+          case DS.Nil => DS.Nil
+        }
+      }
+      case _ => DS.Nil
+    }
   }
 }
