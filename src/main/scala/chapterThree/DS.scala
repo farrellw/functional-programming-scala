@@ -15,17 +15,20 @@ object DS {
   object List {
 
     //Functions placed in the object List are called Companion object to List
-    def sum(ints: DS.List[Int]): Int = ints match {
-      case DS.Nil => 0
-      case DS.Cons(x, xs) => x + sum(xs)
+    def sum(ints: DS.List[Int]): Int = {
+      foldRight(ints, 0)((x,y) => x + y)
     }
 
     //The book provides two different syntax for defining a function.
     //One with curly brackets { and one only with a new line.
     //When to use which? Seen in product and apply
-    def product(ds: DS.List[Double]): Double = ds match {
-      case DS.Nil => 1.0
-      case DS.Cons(x, xs) => x * product(xs)
+    def product(ds: DS.List[Double]): Double = {
+      foldRight(ds, 1.0)((x,y) => x * y)
+    }
+
+    def foldRight[A, B](ds: DS.List[A], fallbackValue: B)(f: (A, B) => B): B = ds match {
+      case DS.Nil => fallbackValue
+      case DS.Cons(x, xs) => f(x, foldRight(xs, fallbackValue)(f))
     }
 
     def apply[A](as: A*): DS.List[A] =
