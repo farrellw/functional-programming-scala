@@ -26,6 +26,11 @@ object DS {
       foldRight(ds, 1.0)((x,y) => x * y)
     }
 
+    def length[A](ds: DS.List[A]): Int = {
+      foldRight(ds, 0)((_, y) => 1 + y)
+    }
+
+
     def foldRight[A, B](ds: DS.List[A], fallbackValue: B)(f: (A, B) => B): B = ds match {
       case DS.Nil => fallbackValue
       case DS.Cons(x, xs) => f(x, foldRight(xs, fallbackValue)(f))

@@ -102,4 +102,13 @@ class DSSpec extends FunSpec {
       assert(actual == expected)
     }
   }
+
+  describe("Length, 3.9"){
+    it("Calculates length of a list using foldRight"){
+      val actual = DS.List.length(DS.List(1,2,3,4))
+      val expected = 4
+
+      assert(actual == expected)
+    }
+  }
 }
