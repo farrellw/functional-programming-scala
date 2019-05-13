@@ -36,6 +36,15 @@ object DS {
       case DS.Cons(x, xs) => f(x, foldRight(xs, fallbackValue)(f))
     }
 
+
+    @annotation.tailrec
+    def foldLeft[A,B](as: List[A], z: B)(f: (B, A) => B): B = {
+      as match {
+        case DS.Nil => z
+        case DS.Cons(x, xs) => foldLeft(xs, f(z, x))(f)
+      }
+    }
+
     def apply[A](as: A*): DS.List[A] =
       if (as.isEmpty) DS.Nil
       else DS.Cons(as.head, apply(as.tail: _*))
