@@ -103,10 +103,136 @@ class DSSpec extends FunSpec {
     }
   }
 
-  describe("Length, 3.9"){
-    it("Calculates length of a list using foldRight"){
-      val actual = DS.List.length(DS.List(1,2,3,4))
+  describe("Length, 3.9") {
+    it("Calculates length of a list using foldRight") {
+      val actual = DS.List.length(DS.List(1, 2, 3, 4))
       val expected = 4
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("Sum, product, length using FoldLeft, 3.11") {
+    it("Calculates sum of a list using foldLeft") {
+      val actual = DS.List.sumFoldLeft(DS.List(1, 2, 3, 4))
+      val expected = 10
+
+      assert(actual == expected)
+    }
+
+    it("Calculates product of a list using foldLeft") {
+      val actual = DS.List.productFoldLeft(DS.List(1, 2, 3, 4))
+      val expected = 24
+
+      assert(actual == expected)
+    }
+
+    it("Calculates length of a list using foldLeft") {
+      val actual = DS.List.lengthFoldLeft(DS.List(1, 2, 3, 4))
+      val expected = 4
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("Reverse, 3.12") {
+    it("Returns reverse of a list") {
+      val actual = DS.List.reverse(DS.List(1, 2, 3, 4))
+      val expected = DS.List(4, 3, 2, 1)
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("Append, 3.14") {
+    it("Append in terms of foldRight") {
+      val actual = DS.List.appendFoldRight(DS.List(1, 2, 3, 4), DS.List(5, 6))
+      val expected = DS.List(1, 2, 3, 4, 5, 6)
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("Map, 3.16-3.18") {
+    it("Transforms a list of integers by adding 1 to each element") {
+      val actual = DS.List.map(DS.List(1, 2, 3, 4))(_ + 1)
+      val expected = DS.List(2, 3, 4, 5)
+
+      assert(actual == expected)
+    }
+
+    it("Turns each value in a list[Double] to a String") {
+      val actual = DS.List.map(DS.List(1.0, 2.0, 3.0))(_.toString)
+      val expected = DS.List("1.0", "2.0", "3.0")
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("Filter, 3.19") {
+    it("Removes elements from a list unless they satisfy a given predicate.") {
+      def isEven(a: Int): Boolean = {
+        a % 2 == 0
+      }
+
+      val actual = DS.List.filter(DS.List(1, 2, 3, 4))(isEven)
+      val expected = DS.List(2, 4)
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("FlatMap, 3.2") {
+    it("Works like a map except that the function given will return a list instead of a single result") {
+      def newList(i: Int): DS.List[Int] = {
+        DS.List(i, i)
+      }
+
+      val actual = DS.List.flatMap(DS.List(1, 2, 3))(newList)
+      val expected = DS.List(1, 1, 2, 2, 3, 3)
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("ZipWith, 3.23") {
+    it("Zips two lists together according to a passed in function") {
+      val actual = DS.List.zipWith(DS.List(1, 2, 3), DS.List(4, 5, 6))((x, y) => x + y)
+      val expected = DS.List(5, 7, 9)
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("Take, extra-credit") {
+    it("Returns the first n elements of a list") {
+      val actual = DS.List.take(DS.List(1, 2, 3), 2)
+      val expected = DS.List(1, 2)
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("Take-while, extra-credit") {
+    it("Returns the first n elements that match a given function") {
+      val actual = DS.List.takeWhile(DS.List(1, 2, 3))(_ < 2)
+      val expected = DS.List(1)
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("Forall, extra-credit"){
+    it("Returns true if all elements of list match a predicate") {
+      val actual = DS.List.forall(DS.List(1, 2, 3))(_ < 4)
+      val expected = true
+
+      assert(actual == expected)
+    }
+
+    it("Returns false if all elements of list match a predicate") {
+      val actual = DS.List.forall(DS.List(1, 2, 3))(_ < 2)
+      val expected = false
 
       assert(actual == expected)
     }
