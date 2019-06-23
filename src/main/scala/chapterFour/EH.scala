@@ -69,4 +69,25 @@ object EH {
   def sequenceInTermsOfTraverse[A](a: List[EH.Option[A]]): EH.Option[List[A]] = {
     traverse(a)(b => b.orElse(EH.None))
   }
+
+  sealed trait Either[+E, +A] {
+    def map[B](f: A => B): EH.Either[E, B] = this match {
+      case EH.Left(e: E) => EH.Left(e)
+      case EH.Right(a: A) => EH.Right(f(a))
+    }
+
+    def flatMap[EE >: E, B](f: A => EH.Either[EE, B]): EH.Either[EE, B] = this match {
+      case EH.Left(e: E) => EH.Left(e)
+      case Right(a: A) => f(a)
+    }
+
+    def orElse[EE >: E, B >: A](b: => EH.Either[EE, B]): EH.Either[EE, B] = ???
+
+    def map2[EE >: E, B, C](b: EH.Either[EE, B])(f: (A, B) => C): EH.Either[EE, C] = ???
+  }
+
+  case class Left[+E](value: E) extends EH.Either[E, Nothing]
+
+  case class Right[+A](value: A) extends EH.Either[Nothing, A]
+
 }

@@ -158,7 +158,7 @@ class EHSpec extends FunSpec {
 
   describe("Traverse") {
     def timesTwo(x: Int): EH.Option[Int] = {
-      if(x > 2){
+      if (x > 2) {
         EH.Some(x * 2)
       } else {
         EH.None
@@ -193,6 +193,64 @@ class EHSpec extends FunSpec {
       val beginningSequence = List(EH.Some(1), EH.Some(2), EH.Some(3))
       val actual = EH.sequenceInTermsOfTraverse(beginningSequence)
       val expected = EH.Some(List(1, 2, 3))
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("Map") {
+    def timesTwo(i: Int): Int = i * 2
+
+    it("Applies the function when the option is right") {
+      val actual = EH.Right(2).map(timesTwo)
+      val expected = EH.Right(4)
+
+      assert(actual == expected)
+    }
+    it("Returns the left when the option is left") {
+      val exception = new Exception("An Error Occurred")
+      val actual = EH.Left(exception).map(timesTwo)
+      val expected = EH.Left(exception)
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("FlatMap") {
+    def timesTwo(i: Int): Int = i * 2
+
+    def timesTwoIfGreaterThanTwo(i: Int): EH.Either[Exception, Int] = {
+      if (i > 2) {
+        EH.Right(timesTwo(i))
+      } else {
+        EH.Left(new Exception("Input parameter was two or less"))
+      }
+    }
+
+    it("Returns the original left Left if called on a left") {
+      val exception = new Exception("An Error Occurred")
+      val actual = EH.Left(exception).flatMap(timesTwoIfGreaterThanTwo)
+
+      assert(actual.isInstanceOf[EH.Left[Exception]])
+      actual match {
+        case EH.Left(e: Exception) => assert(e.getMessage == "An Error Occurred")
+        case _ => assert(1 == 2)
+      }
+    }
+
+    it("Returns Left the inner function returns a left") {
+      val actual = EH.Right(1).flatMap(timesTwoIfGreaterThanTwo)
+
+      assert(actual.isInstanceOf[EH.Left[Exception]])
+      actual match {
+        case EH.Left(e: Exception) => assert(e.getMessage == "Input parameter was two or less")
+        case _ => assert(1 == 2)
+      }
+    }
+
+    it("Returns Right if called on a right, and the inner function returns right.") {
+      val actual = EH.Right(3).flatMap(timesTwoIfGreaterThanTwo)
+      val expected = EH.Right(6)
 
       assert(actual == expected)
     }
