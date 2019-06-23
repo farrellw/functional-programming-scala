@@ -34,18 +34,12 @@ object DS {
     def appendFoldRight[A](l: List[A], r: List[A]): List[A] =
       foldRight(l, r)(Cons(_, _))
 
-    def foldRight[A, B](ds: DS.List[A], fallbackValue: B)(f: (A, B) => B): B = ds match {
-      case DS.Nil => fallbackValue
-      case DS.Cons(x, xs) => f(x, foldRight(xs, fallbackValue)(f))
-    }
-
-
     def sumFoldLeft(ints: DS.List[Int]): Int = {
-      foldLeft(ints, 0)((x, y) => x + y)
+      foldLeft(ints, 0)(_ + _)
     }
 
     def productFoldLeft(ds: DS.List[Double]): Double = {
-      foldLeft(ds, 1.0)((x, y) => x * y)
+      foldLeft(ds, 1.0)(_ * _)
     }
 
     def lengthFoldLeft[A](ds: DS.List[A]): Int = {
@@ -63,6 +57,15 @@ object DS {
         case DS.Nil => z
         case DS.Cons(x, xs) => foldLeft(xs, f(z, x))(f)
       }
+    }
+
+    def foldRight[A, B](ds: DS.List[A], fallbackValue: B)(f: (A, B) => B): B = ds match {
+      case DS.Nil => fallbackValue
+      case DS.Cons(x, xs) => f(x, foldRight(xs, fallbackValue)(f))
+    }
+
+    def foldRight2[A, B](ds: DS.List[A], fallbackValue: B)(f: (A, B) => B): B = {
+      foldLeft(ds, fallbackValue)((agg: B, item: A) => f(item, agg))
     }
 
     def apply[A](as: A*): DS.List[A] =

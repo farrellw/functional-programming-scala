@@ -155,7 +155,9 @@ class DSSpec extends FunSpec {
 
   describe("Map, 3.16-3.18") {
     it("Transforms a list of integers by adding 1 to each element") {
-      val actual = DS.List.map(DS.List(1, 2, 3, 4))(_ + 1)
+      val actual = DS.List.map(DS.List(1, 2, 3, 4))(x => {
+        x + 1
+      })
       val expected = DS.List(2, 3, 4, 5)
 
       assert(actual == expected)
