@@ -255,4 +255,88 @@ class EHSpec extends FunSpec {
       assert(actual == expected)
     }
   }
+
+  describe("orElse") {
+    it("Returns the default on a left") {
+      val actual = EH.Left(new Exception("Poor error here")).orElse(EH.Right(2))
+      val expected = EH.Right(2)
+
+      assert(actual == expected)
+    }
+    it("Returns the right on a right") {
+      val actual = EH.Right(3).orElse(EH.Right(2))
+      val expected = EH.Right(3)
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("Map2") {
+    def multiply(a: Int, b: Int): Int = a * b
+
+    it("Returns a left if either of the provided values are Left") {
+      val actual = EH.Right(3).map2(EH.Left(new Exception("2nd Value E")))(multiply)
+
+      assert(actual.isInstanceOf[EH.Left[Exception]])
+      actual match {
+        case EH.Left(e: Exception) => assert(e.getMessage == "2nd Value E")
+        case _ => assert(1 == 2)
+      }
+    }
+
+    it("Returns a right with a computed value if both provided values are Right") {
+      val actual = EH.Right(3).map2(EH.Right(4))(multiply)
+      val expected = EH.Right(12)
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("SeqEither") {
+    it("Returns the first left if is one") {
+      val beginningSequence = List(EH.Right(1), EH.Left(new Exception("Common Exception")), EH.Right(3))
+      val actual = EH.seqEither(beginningSequence)
+
+      actual match {
+        case EH.Left(e: Exception) => assert(e.getMessage == "Common Exception")
+        case _ => assert(1 == 2)
+      }
+    }
+
+    it("Returns a right of a list if all are rights") {
+      val beginningSequence = List(EH.Right(1), EH.Right(2), EH.Right(3))
+      val actual = EH.seqEither(beginningSequence)
+      val expected = EH.Right(List(1, 2, 3))
+
+      assert(actual == expected)
+    }
+  }
+
+  describe("TravEither") {
+    def timesTwo(x: Int): EH.Either[Exception, Int] = {
+      if (x > 2) {
+        EH.Right(x * 2)
+      } else {
+        EH.Left(new Exception("Less than 2"))
+      }
+    }
+
+    it("Returns Left if one of values returns a Left from the function passed in") {
+      val beginningSequence = List(1, 2, 3)
+      val actual = EH.travEither(beginningSequence)(timesTwo)
+
+      actual match {
+        case EH.Left(e: Exception) => assert(e.getMessage == "Less than 2")
+        case _ => assert(1 == 2)
+      }
+    }
+
+    it("Returns Right of a list if all values return Right from passed in.") {
+      val beginningSequence = List(3, 4, 5)
+      val actual = EH.travEither(beginningSequence)(timesTwo)
+      val expected = EH.Right(List(6, 8, 10))
+
+      assert(actual == expected)
+    }
+  }
 }

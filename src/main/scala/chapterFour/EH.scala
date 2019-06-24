@@ -72,18 +72,44 @@ object EH {
 
   sealed trait Either[+E, +A] {
     def map[B](f: A => B): EH.Either[E, B] = this match {
-      case EH.Left(e: E) => EH.Left(e)
-      case EH.Right(a: A) => EH.Right(f(a))
+      case EH.Left(e) => EH.Left(e)
+      case EH.Right(a) => EH.Right(f(a))
     }
 
     def flatMap[EE >: E, B](f: A => EH.Either[EE, B]): EH.Either[EE, B] = this match {
-      case EH.Left(e: E) => EH.Left(e)
-      case Right(a: A) => f(a)
+      case EH.Left(e) => EH.Left(e)
+      case EH.Right(a) => f(a)
     }
 
-    def orElse[EE >: E, B >: A](b: => EH.Either[EE, B]): EH.Either[EE, B] = ???
+    def orElse[EE >: E, B >: A](b: => EH.Either[EE, B]): EH.Either[EE, B] = this match {
+      case EH.Left(_) => b
+      case EH.Right(a) => EH.Right(a)
+    }
 
-    def map2[EE >: E, B, C](b: EH.Either[EE, B])(f: (A, B) => C): EH.Either[EE, C] = ???
+    def map2[EE >: E, B, C](b: EH.Either[EE, B])(f: (A, B) => C): EH.Either[EE, C] = this match {
+      case EH.Left(e) => EH.Left(e)
+      case EH.Right(a) => b match {
+        case EH.Left(e) => EH.Left(e)
+        case EH.Right(bb) => EH.Right(f(a, bb))
+      }
+    }
+  }
+
+  def seqEither[E, A](es: List[Either[E, A]]): Either[E, List[A]] = {
+    val newList = es.map( _ match {
+      case EH.Left(e) => return EH.Left(e)
+      case EH.Right(a) => a
+    })
+    EH.Right(newList)
+  }
+
+  def travEither[E, A, B](as: List[A])(f: A => Either[E, B]): Either[E, List[B]] = {
+    val newList = as.map(asItem => f(asItem) match {
+      case EH.Left(e) => return EH.Left(e)
+      case EH.Right(b) => b
+    })
+
+    EH.Right(newList)
   }
 
   case class Left[+E](value: E) extends EH.Either[E, Nothing]
